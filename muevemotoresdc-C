@@ -1,0 +1,72 @@
+/*
+El siguiente código enciende ambos motores en un sentido, a continuación en sentido contrario, y finalmente los para por completo,
+para después volver a iniciar el ciclo.
+*/
+
+// Incluimos la biblioteca necesaria para el ESP8266
+#include <ESP8266WiFi.h>
+
+// Definición de pines para el ESP8266
+// El ESP8266 tiene PWM en los pines GPIO: 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16
+const int pinENA = 5;  // GPIO5 (D1)
+const int pinIN1 = 4;  // GPIO4 (D2)
+const int pinIN2 = 0;  // GPIO0 (D3)
+const int pinIN3 = 2;  // GPIO2 (D4)
+const int pinIN4 = 14; // GPIO14 (D5)
+const int pinENB = 12; // GPIO12 (D6)
+
+const int waitTime = 2000;  // espera entre fases
+const int speed = 200;      // velocidad de giro (0-1023 para ESP8266)
+
+// Arrays para los motores
+const int pinMotorA[3] = { pinENA, pinIN1, pinIN2 };
+const int pinMotorB[3] = { pinENB, pinIN3, pinIN4 };
+
+void setup() {
+  // Configuración de los pines como salidas
+  pinMode(pinIN1, OUTPUT);
+  pinMode(pinIN2, OUTPUT);
+  pinMode(pinENA, OUTPUT);
+  pinMode(pinIN3, OUTPUT);
+  pinMode(pinIN4, OUTPUT);
+  pinMode(pinENB, OUTPUT);
+  
+  // Inicializamos la comunicación serial para debugging
+  Serial.begin(115200);
+  
+  // Desactivamos el WiFi para evitar interferencias (opcional)
+  WiFi.mode(WIFI_OFF);
+}
+
+void loop() {
+  // El mismo patrón de movimiento que en Arduino
+  moveForward(pinMotorA, 800);  // Ajustado para ESP8266 (0-1023)
+  moveForward(pinMotorB, 800);
+  delay(waitTime);
+  
+  moveBackward(pinMotorA, 800);
+  moveBackward(pinMotorB, 800);
+  delay(waitTime);
+  
+  fullStop(pinMotorA);
+  fullStop(pinMotorB);
+  delay(waitTime);
+}
+
+void moveForward(const int pinMotor[3], int speed) {
+  digitalWrite(pinMotor[1], HIGH);
+  digitalWrite(pinMotor[2], LOW);
+  analogWrite(pinMotor[0], speed);
+}
+
+void moveBackward(const int pinMotor[3], int speed) {
+  digitalWrite(pinMotor[1], LOW);
+  digitalWrite(pinMotor[2], HIGH);
+  analogWrite(pinMotor[0], speed);
+}
+
+void fullStop(const int pinMotor[3]) {
+  digitalWrite(pinMotor[1], LOW);
+  digitalWrite(pinMotor[2], LOW);
+  analogWrite(pinMotor[0], 0);
+}
