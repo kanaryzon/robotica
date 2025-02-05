@@ -15,7 +15,7 @@ PIN_IN4 = 14  # GPIO14 (D5)
 PIN_ENB = 12  # GPIO12 (D6)
 
 WAIT_TIME = 2  # espera entre fases (en segundos)
-SPEED = 200    # velocidad de giro (0-1023)
+SPEED = 818    # velocidad de giro 80% (0-1023 para ESP8266)
 
 # Arrays para los motores (en Python usamos listas)
 PIN_MOTOR_A = [PIN_ENA, PIN_IN1, PIN_IN2]
