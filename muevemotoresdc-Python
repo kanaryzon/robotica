@@ -1,0 +1,92 @@
+"""
+El siguiente código enciende ambos motores en un sentido, a continuación en sentido contrario, y finalmente los para por completo,
+para después volver a iniciar el ciclo.
+"""
+
+from time import sleep
+import RPi.GPIO as GPIO  # Esta sería la biblioteca para controlar GPIO en Raspberry Pi
+
+# Definición de pines
+PIN_ENA = 5   # GPIO5 (D1)
+PIN_IN1 = 4   # GPIO4 (D2)
+PIN_IN2 = 0   # GPIO0 (D3)
+PIN_IN3 = 2   # GPIO2 (D4)
+PIN_IN4 = 14  # GPIO14 (D5)
+PIN_ENB = 12  # GPIO12 (D6)
+
+WAIT_TIME = 2  # espera entre fases (en segundos)
+SPEED = 200    # velocidad de giro (0-1023)
+
+# Arrays para los motores (en Python usamos listas)
+PIN_MOTOR_A = [PIN_ENA, PIN_IN1, PIN_IN2]
+PIN_MOTOR_B = [PIN_ENB, PIN_IN3, PIN_IN4]
+
+def setup():
+    """Configuración inicial"""
+    # Configuramos el modo de numeración de pines
+    GPIO.setmode(GPIO.BCM)
+    
+    # Configuración de los pines como salidas
+    for pin in [PIN_IN1, PIN_IN2, PIN_ENA, PIN_IN3, PIN_IN4, PIN_ENB]:
+        GPIO.setup(pin, GPIO.OUT)
+    
+    # Configuramos los pines PWM
+    global pwm_a, pwm_b
+    pwm_a = GPIO.PWM(PIN_ENA, 1000)  # Frecuencia 1000Hz
+    pwm_b = GPIO.PWM(PIN_ENB, 1000)
+    pwm_a.start(0)
+    pwm_b.start(0)
+
+def move_forward(pin_motor, speed):
+    """Mueve el motor hacia adelante"""
+    GPIO.output(pin_motor[1], GPIO.HIGH)
+    GPIO.output(pin_motor[2], GPIO.LOW)
+    if pin_motor == PIN_MOTOR_A:
+        pwm_a.ChangeDutyCycle(speed * 100 / 1023)  # Convertimos el rango 0-1023 a 0-100
+    else:
+        pwm_b.ChangeDutyCycle(speed * 100 / 1023)
+
+def move_backward(pin_motor, speed):
+    """Mueve el motor hacia atrás"""
+    GPIO.output(pin_motor[1], GPIO.LOW)
+    GPIO.output(pin_motor[2], GPIO.HIGH)
+    if pin_motor == PIN_MOTOR_A:
+        pwm_a.ChangeDutyCycle(speed * 100 / 1023)
+    else:
+        pwm_b.ChangeDutyCycle(speed * 100 / 1023)
+
+def full_stop(pin_motor):
+    """Detiene el motor"""
+    GPIO.output(pin_motor[1], GPIO.LOW)
+    GPIO.output(pin_motor[2], GPIO.LOW)
+    if pin_motor == PIN_MOTOR_A:
+        pwm_a.ChangeDutyCycle(0)
+    else:
+        pwm_b.ChangeDutyCycle(0)
+
+def main_loop():
+    """Bucle principal"""
+    try:
+        while True:
+            # Movimiento hacia adelante
+            move_forward(PIN_MOTOR_A, 800)
+            move_forward(PIN_MOTOR_B, 800)
+            sleep(WAIT_TIME)
+            
+            # Movimiento hacia atrás
+            move_backward(PIN_MOTOR_A, 800)
+            move_backward(PIN_MOTOR_B, 800)
+            sleep(WAIT_TIME)
+            
+            # Parada
+            full_stop(PIN_MOTOR_A)
+            full_stop(PIN_MOTOR_B)
+            sleep(WAIT_TIME)
+            
+    except KeyboardInterrupt:
+        # Limpiamos los pines GPIO al salir
+        GPIO.cleanup()
+
+if __name__ == "__main__":
+    setup()
+    main_loop()
