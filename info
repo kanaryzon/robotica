@@ -1,7 +1,7 @@
 Ejemplo Arduino:
 https://naylampmechatronics.com/blog/11_tutorial-de-uso-del-modulo-l298n.html
 
-const int PinIN1 = 7;
+const int PinIN1 = 7;  
 const int PinIN2 = 6;
 
 void setup() {
@@ -58,12 +58,15 @@ https://randomnerdtutorials.com/esp8266-nodemcu-dc-motor-l298n-motor-driver-cont
 /*********
   Rui Santos
   Complete project details at https://RandomNerdTutorials.com/esp8266-nodemcu-dc-motor-l298n-motor-driver-control-speed-direction/
+  We recommend soldering a 0.1uF ceramic capacitor to the positive and negative terminals of the DC motor, as shown in the diagram
+  to help smooth out any voltage spikes. (Note: the motors also work without the capacitor.)
+
 *********/
 
 // Motor A
-int motor1Pin1 = 12; 
-int motor1Pin2 = 14; 
-int enable1Pin = 13; 
+int motor1Pin1 = 12; //D6
+int motor1Pin2 = 14; //D5
+int enable1Pin = 13; //D7
 
 // Setting minimum duty cycle
 int dutyCycle = 60;
