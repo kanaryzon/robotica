@@ -16,7 +16,7 @@ const int pinIN4 = 14; // GPIO14 (D5)
 const int pinENB = 12; // GPIO12 (D6)
 
 const int waitTime = 2000;  // espera entre fases
-const int speed = 200;      // velocidad de giro (0-1023 para ESP8266)
+const int speed = 818;      // velocidad de giro 80% (0-1023 para ESP8266)
 
 // Arrays para los motores
 const int pinMotorA[3] = { pinENA, pinIN1, pinIN2 };
