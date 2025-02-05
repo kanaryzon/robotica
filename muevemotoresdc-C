@@ -1,6 +1,7 @@
 /*
 El siguiente código enciende ambos motores en un sentido, a continuación en sentido contrario, y finalmente los para por completo,
 para después volver a iniciar el ciclo.
+
 */
 
 // Incluimos la biblioteca necesaria para el ESP8266
@@ -17,6 +18,13 @@ const int pinENB = 12; // GPIO12 (D6)
 
 const int waitTime = 2000;  // espera entre fases
 const int speed = 818;      // velocidad de giro 80% (0-1023 para ESP8266)
+
+/*
+25% = 256 (ESP8266)
+50% = 512 (ESP8266)
+75% = 767 (ESP8266)
+100% = 1023 (ESP8266)
+*/
 
 // Arrays para los motores
 const int pinMotorA[3] = { pinENA, pinIN1, pinIN2 };
